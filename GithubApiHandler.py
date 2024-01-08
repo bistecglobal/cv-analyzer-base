@@ -1,11 +1,11 @@
-from github import Github
+import github
 from urllib.parse import urlparse
 import inflect
 
 def GetGithubRepoDetails(github_url):
     # Use a GitHub API token securely
-    github_token = "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"
-    g = Github(github_token)
+    github_token = "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"
+    g = github.Github(github_token)
 
     username = ''
     gitResult = ''
@@ -30,6 +30,7 @@ def GetGithubRepoDetails(github_url):
         else:
             gitResult = 'Candidate has no repositories on GitHub'
     except Exception as e:
+        print(e)
         gitResult = ''
 
     return gitResult

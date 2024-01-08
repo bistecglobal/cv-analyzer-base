@@ -15,7 +15,7 @@ css = '''
     border-radius: 10px;
 }
 .chat-message.scorng{
-    background-color: #f54242;
+    background-color: #d6470f;
     color: #fff;
     border-radius: 10px;
 }

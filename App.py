@@ -8,7 +8,7 @@ import JsonContentHandler as JsonAnalysis
 import KeywordHandler as keywordAnalysis
 
 load_dotenv()
-st.set_page_config(page_title="CV Screening", page_icon=":document:")
+st.set_page_config(page_title="Resume Screening", page_icon=":document:")
 st.write(css, unsafe_allow_html=True)
 
 if "userQuestion" not in st.session_state:
@@ -29,8 +29,8 @@ if st.sidebar.button("Forecast"):
           st.session_state['userQuestion'] = "Please analyze this resume for "+jobTitle+" post";
           
           if exLevel:
-               exLevel = GitHubData.NumberToWords(exLevel)
-               st.session_state['userQuestion'] = "Please analyze this resume for "+exLevel+" years experience "+jobTitle+" post.";
+               exLevelnum = GitHubData.NumberToWords(exLevel)
+               st.session_state['userQuestion'] = "Please analyze this resume for "+exLevelnum+" years experience "+jobTitle+" post.";
           
           if comLevel:
                st.session_state['userQuestion'] = "Please analyze this resume for "+jobTitle+" post with "+comLevel+", both written and verbal.";
@@ -42,16 +42,16 @@ if st.sidebar.button("Forecast"):
                st.session_state['userQuestion'] = "Please analyze this resume for "+jobTitle+" post with "+comLevel+", both written and verbal and compatibility with our company culture of "+comCultre+".";
 
           if exLevel and comCultre:
-               exLevel = GitHubData.NumberToWords(exLevel)
-               st.session_state['userQuestion'] = "Please analyze this resume for "+exLevel+" years experience "+jobTitle+" post and compatibility with our company culture of "+comCultre+".";
+               exLevelnum = GitHubData.NumberToWords(exLevel)
+               st.session_state['userQuestion'] = "Please analyze this resume for "+exLevelnum+" years experience "+jobTitle+" post and compatibility with our company culture of "+comCultre+".";
 
           if comLevel and exLevel:
-               exLevel = GitHubData.NumberToWords(exLevel)
-               st.session_state['userQuestion'] = "Please analyze this resume for "+exLevel+" years experience "+jobTitle+" post with "+comLevel+", both written and verbal.";
+               exLevelnum = GitHubData.NumberToWords(exLevel)
+               st.session_state['userQuestion'] = "Please analyze this resume for "+exLevelnum+" years experience "+jobTitle+" post with "+comLevel+", both written and verbal.";
 
           if exLevel and comLevel and comCultre:
-               exLevel = GitHubData.NumberToWords(exLevel)
-               st.session_state['userQuestion'] = "Please analyze this resume for "+exLevel+" years experience "+jobTitle+" post with "+comLevel+", both written and verbal and compatibility with our company culture of "+comCultre+".";     
+               exLevelnum = GitHubData.NumberToWords(exLevel)
+               st.session_state['userQuestion'] = "Please analyze this resume for "+exLevelnum+" years experience "+jobTitle+" post with "+comLevel+", both written and verbal and compatibility with our company culture of "+comCultre+".";     
           
           st.text_area("Forecast this candidate based on:",st.session_state['userQuestion'])   
           with st.spinner("Analyzing"):
@@ -84,11 +84,11 @@ if st.sidebar.button("Forecast"):
                     #similarity_score = round(((kew1.similarity(kew2)) * 100),2)
                     #st.write(similarity_score)
 
-                    summaryScre = 'Forecast score: '+str(y[0]["matchingPercentage"])
+                    summaryScre = 'Forecast score: '+str(y[0]["matchingPercentage"])+' %'
                     if y[0]["matchingPercentage"]>50:
                      st.write(SC_template_ps.replace("{{MSG}}", summaryScre),unsafe_allow_html=True)  
                     else:
-                      st.write(SC_template_ps.replace("{{MSG}}", summaryScre),unsafe_allow_html=True)        
+                      st.write(SC_template_ng.replace("{{MSG}}", summaryScre),unsafe_allow_html=True)        
      else:
           st.error('Please check whether "job title" inserted and "Resume" uploaded', icon="⚠️")                   
               

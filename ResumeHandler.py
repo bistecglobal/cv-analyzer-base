@@ -7,6 +7,7 @@ from langchain.llms import OpenAI
 from langchain.prompts import PromptTemplate
 from langchain.chains import LLMChain
 import spacy
+from collections import Counter
 
 
 # Analyze resumes
@@ -28,7 +29,8 @@ def GetSingleResumeResult(pdfDoc, userQuestion,jobTitle):
      if "The linkedin URL of this resume is" in linkedinURL: 
       linkedinURL = linkedinURL.replace("The linkedin URL of this resume is", "") 
 
-     linkedinURL = linkedinURL.replace(".", "")      
+     linkedinURL = linkedinURL.replace(".", "")
+     linkedinURL = linkedinURL.replace("contactprofile", "")    
      if "This resume does not have a LinkedIn URL." in linkedinURL or "There is no LinkedIn URL in this resume." in linkedinURL or "The LinkedIn URL is not provided in this resume." in linkedinURL: 
       linkedinURL = ""
      
@@ -55,7 +57,7 @@ def GetSingleResumeResult(pdfDoc, userQuestion,jobTitle):
      
      candidateEmail = GetResumeAnalysis("what is the candidate email of this resume?", texts).replace("The candidate email is ", "")
      jobDescription = GetJobDescription(jobTitle)
-     candidateScore = GetResumeAnalysisScore(jobDescription,matchingPercentage)
+     candidateScore = GetResumeAnalysisScore(userQuestion,pdfText)
      jobSkills = GetJobSkiilList(jobTitle)
      pdfDict[pdfName] = [{ 'analysis': matchingPercentage, 'jobDescription': jobDescription, 'matchingPercentage': candidateScore,'jobSkills': jobSkills, 'linkedinURL': linkedinURL, 'githubURL': githubURL, 'facebookURL': facebookURL, 'candidateEmail': candidateEmail }]
           
@@ -160,13 +162,29 @@ def GetResumeAnalysisScore(jobPost,resumeText):
 
     nlp = spacy.load("en_core_web_md")
     # Process the text using spaCy
-    jobPostDoc = nlp(jobPost)
-    print("jd");
-    print(jobPostDoc);
-    resumeDoc = nlp(resumeText)
-    print("res");
-    print(resumeDoc);
+    #jobPostDoc = nlp(jobPost)
+    #print("jd");
+    #print(jobPostDoc);
+    #resumeDoc = nlp(resumeText)
+    #print("res");
+    #print(resumeDoc);
 
     # Calculate similarity between job post and resume
-    similarity_score = round(((resumeDoc.similarity(jobPostDoc)) * 100),2)
-    return similarity_score
+    #similarity_score = round(((resumeDoc.similarity(jobPostDoc)) * 100),2)
+    #similarity_score =28.35
+
+        # Process CV text
+    cv_doc = nlp(resumeText)
+
+    # Tokenize and count words in CV
+    cv_word_counts = Counter(token.text.lower() for token in cv_doc if token.is_alpha)
+
+    # Tokenize and count words in job post requirements
+    job_post_word_counts = Counter(jobPost.lower().split())
+
+    # Calculate the percentage match
+    total_words_in_cv = sum(cv_word_counts.values())
+    matched_words = sum((cv_word_counts & job_post_word_counts).values())
+    percentage_match = (matched_words / total_words_in_cv) * 100
+
+    return round(((percentage_match) * 100),2)
